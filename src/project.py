@@ -1,4 +1,7 @@
 import random
+import os
+import sys
+import subprocess
 
 inventory = []
 
@@ -116,13 +119,33 @@ def ending(result, name):
         print("Defeat. The kingdom falls.")
 
 def play_again():
-    choice = input("\nDo you want to play again? (y/n): ").strip().lower()
-    return choice in {"y", "yes"}
+    print("\nDo you want to play again?")
+    print("1) Restart in the same window")
+    print("2) Restart in a new window")
+    print("3) Quit")
+    choice = input("> ").strip()
+    if choice == "1":
+        return "same"
+    elif choice == "2":
+        return "new"
+    else:
+        return "quit"
+
+def open_new_window():
+    python_exec = sys.executable
+    script_path = os.path.abspath(__file__)
+    subprocess.Popen(["start", "cmd", "/k", python_exec, script_path], shell=True)
 
 if __name__ == "__main__":
     while True:
         inventory.clear()
         main()
-        if not play_again():
+        action = play_again()
+        if action == "same":
+            continue
+        elif action == "new":
+            open_new_window()
+            break
+        else:
             print("\nThanks for playing! Goodbye.")
             break
